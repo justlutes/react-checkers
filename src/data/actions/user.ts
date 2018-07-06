@@ -19,9 +19,9 @@ export function LoginUserAction(
     try {
       let user;
       try {
-        user = await auth.signInAndRetrieveDataWithEmailAndPassword(email, password);
+        user = await auth.signInWithEmailAndPassword(email, password);
       } catch (error) {
-        user = await auth.createUserAndRetrieveDataWithEmailAndPassword(email, password);
+        user = await auth.createUserWithEmailAndPassword(email, password);
       }
 
       if (!user) {
@@ -29,7 +29,10 @@ export function LoginUserAction(
       }
 
       return dispatch({
-        payload: { email: user.user && user.user.email ? user.user.email : '' },
+        payload: {
+          email,
+          isAuthenticated: true,
+        },
         type: constants.LOGIN_USER,
       });
     } catch (e) {

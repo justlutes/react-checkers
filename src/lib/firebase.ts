@@ -10,5 +10,5 @@ firebase.initializeApp({
 });
 
 const databaseRef = firebase.database().ref();
-export const leadersRef = databaseRef.child('leaders');
+export const usersRef = databaseRef.child('users');
 export const auth = firebase.auth();

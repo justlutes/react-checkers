@@ -1,12 +1,10 @@
-import { StoreState } from '../../@types';
 import { FETCH_LEADERS, UPDATE_LEADERS } from '../constants';
 
 const initialState = {
   leaderBoard: [],
-  user: null,
 };
 
-export function leaderboardReducer(state = initialState, action: any): StoreState {
+export function leaderboardReducer(state = initialState, action: any): any {
   switch (action.type) {
     case FETCH_LEADERS:
       return { ...state, leaderBoard: action.payload };

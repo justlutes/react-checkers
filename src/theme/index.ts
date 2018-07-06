@@ -1,7 +1,9 @@
 import * as styledComponents from 'styled-components';
 
 interface IThemeInterface {
+  accentColor: string;
   primaryColor: string;
+  secondaryColor: string;
 }
 
 const {
@@ -13,7 +15,9 @@ const {
 } = styledComponents as styledComponents.ThemedStyledComponentsModule<IThemeInterface>;
 
 export const theme: IThemeInterface = {
-  primaryColor: '#FFFFFF',
+  accentColor: '#F9C983',
+  primaryColor: '#245B7E',
+  secondaryColor: '#f6f9fc',
 };
 
 export default styled;

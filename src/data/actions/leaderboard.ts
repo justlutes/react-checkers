@@ -1,12 +1,12 @@
 import { Action, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { ILeader, ILeaderboard, StoreState } from '../../@types';
-import { leadersRef } from '../../lib/firebase';
+import { IFirebaseUser, ILeader, StoreState } from '../../@types';
+import { usersRef } from '../../lib/firebase';
 import * as constants from '../constants';
 
 export interface IFetchLeaders {
   type: constants.FETCH_LEADERS;
-  payload: ILeaderboard;
+  payload: ILeader[];
 }
 
 export interface IUpdateLeaders {
@@ -23,11 +23,11 @@ export function FetchLeadersAction(): ThunkAction<
 > {
   return async (dispatch: Dispatch<IFetchLeaders>): Promise<Action> => {
     try {
-      const snapshot = await leadersRef.once('value');
-      let payload = snapshot.val();
-      payload = Object.keys(payload).map(p => ({
-        name: p,
-        wins: payload[p],
+      const snapshot = await usersRef.once('value');
+      const users: IFirebaseUser[] = snapshot.val();
+      const payload = users.filter(u => u).map(({ name, wins }) => ({
+        name,
+        wins,
       }));
 
       return dispatch({
@@ -45,16 +45,15 @@ export function FetchLeadersAction(): ThunkAction<
 
 export function UpdateLeadersAction(
   name: string,
-  current: ILeader[],
 ): ThunkAction<Promise<Action>, StoreState, void, IUpdateLeaders> {
   return async (dispatch: Dispatch<IUpdateLeaders>): Promise<Action> => {
     try {
-      const currentWins = current.find(l => l.name.toLowerCase() === name.toLowerCase()) || {
-        name,
-        wins: 0,
-      };
-      const newWins = currentWins.wins + 1;
-      await leadersRef.child(`/${name}`).set(newWins);
+      const snapshot = await usersRef.once('value');
+      const users = snapshot.val();
+
+      const existingUser = Object.keys(users).find(u => u === name);
+      const newWins = existingUser ? users[existingUser] + 1 : 1;
+      await usersRef.child(`/${name}`).set(newWins);
 
       return dispatch({
         type: constants.UPDATE_LEADERS,
