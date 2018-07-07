@@ -1,4 +1,6 @@
-export default function generateBoard() {
+import { IGameState } from '../@types';
+
+export default function generateBoard(): IGameState {
   const cells = Array(64).fill(-1);
   const bl = [8, 1, 17, 10, 3, 19, 12, 5, 21, 14, 7, 23];
   const r = [40, 56, 49, 42, 58, 51, 44, 60, 53, 46, 62, 55];
@@ -6,23 +8,23 @@ export default function generateBoard() {
   for (let i = 0; i < cells.length; i++) {
     if (bl.indexOf(i) !== -1) {
       cells[i] = {
-        colour: 'black',
+        color: 'black',
         king: false,
       };
     } else if (r.indexOf(i) !== -1) {
       cells[i] = {
-        colour: 'red',
+        color: 'red',
         king: false,
       };
     }
   }
 
   return {
-    active: null,
+    active: false,
     auxiliary: [],
     cells,
     dead: [],
-    gameOver: '',
+    gameOver: false,
     history: [],
     ongoing: true,
     selected: null,

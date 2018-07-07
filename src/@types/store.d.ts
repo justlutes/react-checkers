@@ -4,6 +4,11 @@ export interface StoreState {
 }
 
 export interface HomeStoreState {
+  lobby: any;
   user: any;
+}
+
+export interface GameStoreState {
   game: any;
+  lobby: any;
 }

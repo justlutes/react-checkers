@@ -1,6 +1,17 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { RouteComponentProps } from 'react-router';
 import * as actions from '../../data/actions';
+import Container from '../../components/Container';
+import { GameStoreState } from '../../@types';
+import { GameBoard } from './components';
+
+export function mapStateToProps({ game, lobby }: GameStoreState) {
+  return {
+    game,
+    lobby,
+  };
+}
 
 export function mapDispatchToProps(dispatch: any) {
   return {
@@ -8,18 +19,21 @@ export function mapDispatchToProps(dispatch: any) {
   };
 }
 
-interface IProps {
+interface IProps extends RouteComponentProps<any, any> {
+  game: any;
+  lobby: any;
   updateLeader: any;
 }
 
-function Board({ updateLeader }: IProps) {
+function Board({ game, lobby, updateLeader }: IProps) {
   return (
-    <main>
-      <h1>
-        Board <i className="material-icons">board</i>
-      </h1>
-    </main>
+    <Container>
+      <GameBoard initialState={lobby.state} role={lobby.role} />
+    </Container>
   );
 }
 
-export default connect(mapDispatchToProps)(Board);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Board);
