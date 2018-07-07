@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled, { theme } from '../theme';
+import styled from '../theme';
 
 const SubmitContainer = styled.div`
   position: relative;
@@ -7,52 +7,34 @@ const SubmitContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-top: 40px;
 `;
 
 const SubmitButton = styled.button`
-  position: relative;
-  display: flex;
-  align-items: center;
-  background: ${theme.primaryColor};
-  position: relative;
-  padding: 16px 20px;
+  cursor: pointer;
   border: none;
-  cursor: pointer;
+  border-radius: 4px;
   outline: none;
-  overflow: hidden;
-  color: #f8f8f8;
-  text-decoration: none !important;
-  font-size: 1rem;
-  font-weight: 700;
-`;
-
-const ArrowContainer = styled.div`
+  text-decoration: none;
+  color: #fff;
+  background: #32325d;
+  white-space: nowrap;
   display: inline-block;
-  position: relative;
-  margin-left: 30px;
-  cursor: pointer;
-`;
-
-const Arrow = styled.i`
-  transition: all 500ms cubic-bezier(1, 0, 0, 1) 0ms;
-  ${SubmitButton}:hover & {
-    opacity: 0;
-    transform: translateX(60px);
-  }
-`;
-
-const ArrowHover = styled.i`
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: translateX(-20px);
-  transition: all 500ms cubic-bezier(1, 0, 0, 1) 0ms;
-  opacity: 0;
-  ${SubmitButton}:hover & {
-    opacity: 1;
-    transition-delay: 50ms;
-    transform: translateX(0px);
+  height: 40px;
+  line-height: 40px;
+  padding: 0 14px;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  text-decoration: none;
+  transition: all 150ms ease;
+  margin-left: 12px;
+  margin-top: 28px;
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+    background-color: #43458b;
   }
 `;
 
@@ -64,13 +46,7 @@ interface IProps {
 export default function Button({ onClick, text }: IProps) {
   return (
     <SubmitContainer>
-      <SubmitButton onClick={onClick}>
-        <span>{text}</span>
-        <ArrowContainer>
-          <Arrow className="material-icons">arrow_right_alt</Arrow>
-          <ArrowHover className="material-icons">arrow_right_alt</ArrowHover>
-        </ArrowContainer>
-      </SubmitButton>
+      <SubmitButton onClick={onClick}>{text}</SubmitButton>
     </SubmitContainer>
   );
 }

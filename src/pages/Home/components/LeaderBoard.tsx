@@ -32,13 +32,14 @@ interface IProps {
 
 export class LeaderBoard extends React.PureComponent<IProps, {}> {
   public renderLeaderBoard = () => {
+    const sortedLeaderBoard = this.props.leaderBoard.sort((a, b) => b.wins - a.wins);
     return (
       <Layout>
         <HeaderRow>
           <span>Name</span>
           <span>Wins</span>
         </HeaderRow>
-        {this.props.leaderBoard.map(leader => (
+        {sortedLeaderBoard.map(leader => (
           <LeaderRow key={leader.name}>
             <span>{leader.name}</span>
             <span>{leader.wins}</span>

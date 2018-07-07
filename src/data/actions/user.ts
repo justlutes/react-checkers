@@ -1,7 +1,7 @@
 import { Action, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { IUser, StoreState } from '../../@types';
-import { auth } from '../../lib/firebase';
+import { auth, usersRef } from '../../lib/firebase';
 import * as constants from '../constants';
 
 export interface ILoginUser {
@@ -22,6 +22,13 @@ export function LoginUserAction(
         user = await auth.signInWithEmailAndPassword(email, password);
       } catch (error) {
         user = await auth.createUserWithEmailAndPassword(email, password);
+
+        if (user.user) {
+          await usersRef.child(`${user.user.uid}`).set({
+            email,
+            wins: 0,
+          });
+        }
       }
 
       if (!user) {

@@ -4,6 +4,7 @@
     "exclude": ["config/**/*.js", "node_modules/**/*.ts"]
   },
   "rules": {
-    "no-console": [true, "log"]
+    "no-console": [true, "log"],
+    "ordered-imports": false
   }
 }

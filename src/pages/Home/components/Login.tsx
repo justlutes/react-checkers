@@ -1,38 +1,34 @@
 import * as React from 'react';
 import Button from '../../../components/Button';
-import styled, { theme } from '../../../theme';
+import Input from '../../../components/Input';
+import styled from '../../../theme';
 
 const Container = styled.div`
+  margin-top: 70px
   background: #ffffff;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  padding: 40px;
+  min-width: 100%;
+  min-height: 500px;
   align-items: center;
-  padding: 60px 40px;
+  border-radius: 4px;
   box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
-  border-radius: 6px;
 `;
 
-const InputContainer = styled.div`
+const Form = styled.form`
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  transition-property: opacity, transform;
+  transition-duration: 0.35s;
+  transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+`;
+
+const InputRow = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
-
-const Input = styled.input`
-  border: none;
-  border-bottom: 1px solid ${theme.primaryColor};
-  color: #777;
-  display: inline-block;
-  width: auto;
-  background: rgba(50, 50, 93, 0.1);
-  padding: 0.4rem;
-  border-radius: 0;
-  &:focus {
-    outline: none;
-  }
-  &:nth-child(2) {
-    margin-top: 10px;
-  }
+  margin: 0 5px 10px;
 `;
 
 interface IProps {
@@ -68,13 +64,19 @@ export class Login extends React.Component<IProps, IState> {
   public render() {
     return (
       <Container>
-        <form onSubmit={this.handleSubmit}>
-          <InputContainer>
-            <Input type="email" onChange={this.handleEmailChange} placeholder="email" />
-            <Input type="password" onChange={this.handlePassChange} placeholder="password" />
-          </InputContainer>
+        <Form onSubmit={this.handleSubmit}>
+          <InputRow>
+            <Input type="email" onChange={this.handleEmailChange} placeholder="Enter your Email" />
+          </InputRow>
+          <InputRow>
+            <Input
+              type="password"
+              onChange={this.handlePassChange}
+              placeholder="Enter your Password"
+            />
+          </InputRow>
           <Button text="Login" />
-        </form>
+        </Form>
       </Container>
     );
   }

@@ -6,6 +6,7 @@ import { Redirect } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 import Board from './pages/Board/Board';
 import Home from './pages/Home/Home';
+import LeaderBoard from './pages/LeaderBoard/LeaderBoard';
 import init from './store';
 
 const history = createHistory();
@@ -52,6 +53,7 @@ const PrivateRoute = connect((state: any) => ({
 const AppContainer = () => (
   <ConnectedSwitch>
     <Route exact path="/" component={Home} />
+    <Route path="/leaderboard" component={LeaderBoard} />
     <PrivateRoute path="/board/:id" component={Board} />
   </ConnectedSwitch>
 );
