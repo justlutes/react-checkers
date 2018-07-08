@@ -67,7 +67,7 @@ export function FetchRoomAction(): ThunkAction<Promise<Action>, StoreState, void
       const uid = auth.currentUser && auth.currentUser.uid;
 
       const availableRooms = Object.keys(rooms).filter(
-        r => !rooms[r].black && rooms[r].red !== uid,
+        r => !rooms[r].black || rooms[r].black === uid,
       );
 
       return dispatch({
