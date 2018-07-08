@@ -2,10 +2,11 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import * as actions from '../../data/actions';
-import { EnterGame, Login } from './components';
+import { EnterGame, Login, RoomList } from './components';
 import Container from '../../components/Container';
 import styled from '../../theme';
 import { HomeStoreState } from '../../@types';
+import { roomsRef } from '../../lib/firebase';
 
 const BoardContainer = styled.div`
   margin-top: 70px
@@ -31,31 +32,46 @@ export function mapStateToProps({ lobby, user }: HomeStoreState) {
 export function mapDispatchToProps(dispatch: any) {
   return {
     createRoom: () => dispatch(actions.CreateRoomAction()),
+    fetchRooms: () => dispatch(actions.FetchRoomAction()),
     joinRoom: (roomId: string) => dispatch(actions.JoinRoomAction(roomId)),
-    loginUser: (username: string, password: string) =>
-      dispatch(actions.LoginUserAction(username, password)),
+    loginUser: (email: string, password: string) =>
+      dispatch(actions.LoginUserAction(email, password)),
   };
 }
 
 interface IProps extends RouteComponentProps<any, any> {
-  createRoom: any;
+  createRoom: () => void;
+  fetchRooms: () => void;
   game: any;
-  joinRoom: any;
-  loginUser: any;
+  joinRoom: (i: string) => void;
+  lobby: any;
+  loginUser: (e: string, p: string) => void;
   user: any;
 }
 
 class Home extends React.Component<IProps, any> {
+  public componentDidMount() {
+    roomsRef.on('child_added', () => this.props.fetchRooms());
+  }
+  public onLogin = async (email: string, password: string) => {
+    try {
+      await this.props.loginUser(email, password);
+      this.props.fetchRooms();
+    } catch (error) {
+      console.error(error);
+    }
+  };
   public render() {
     return (
       <Container>
         <h1>Checkers</h1>
         {this.props.user.isAuthenticated ? (
           <BoardContainer>
+            <RoomList rooms={this.props.lobby.rooms} handleClick={this.props.joinRoom} />
             <EnterGame createRoom={this.props.createRoom} joinRoom={this.props.joinRoom} />
           </BoardContainer>
         ) : (
-          <Login loginUser={this.props.loginUser} />
+          <Login loginUser={this.onLogin} />
         )}
       </Container>
     );

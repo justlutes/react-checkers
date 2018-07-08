@@ -1,4 +1,4 @@
-import { JOIN_LOBBY, CREATE_LOBBY } from '../constants';
+import { JOIN_LOBBY, CREATE_LOBBY, FETCH_LOBBY } from '../constants';
 import { LobbyAction } from '../actions';
 
 const initialState = {
@@ -7,6 +7,7 @@ const initialState = {
   full: false,
   history: [],
   roomId: null,
+  rooms: [],
 };
 
 export function lobbyReducer(state = initialState, action: LobbyAction): any {
@@ -26,6 +27,11 @@ export function lobbyReducer(state = initialState, action: LobbyAction): any {
         role: action.role,
         roomId: action.roomId,
         state: action.state,
+      };
+    case FETCH_LOBBY:
+      return {
+        ...state,
+        rooms: action.rooms,
       };
     default:
       return state;

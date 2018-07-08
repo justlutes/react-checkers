@@ -14,6 +14,11 @@ export interface ICreateRoom {
   state: IGameState;
 }
 
+export interface IFetchRoom {
+  rooms: any[];
+  type: constants.FETCH_LOBBY;
+}
+
 export interface IJoinRoom {
   full: boolean;
   role?: 'black' | 'red';
@@ -22,7 +27,7 @@ export interface IJoinRoom {
   type: constants.JOIN_LOBBY;
 }
 
-export type LobbyAction = ICreateRoom | IJoinRoom;
+export type LobbyAction = ICreateRoom | IJoinRoom | IFetchRoom;
 
 export function CreateRoomAction(): ThunkAction<Promise<Action>, StoreState, void, ICreateRoom> {
   return async (dispatch: Dispatch<Action>): Promise<Action> => {
@@ -50,6 +55,32 @@ export function CreateRoomAction(): ThunkAction<Promise<Action>, StoreState, voi
       return {
         type: constants.CREATE_LOBBY,
       };
+    }
+  };
+}
+
+export function FetchRoomAction(): ThunkAction<Promise<Action>, StoreState, void, IJoinRoom> {
+  return async (dispatch: Dispatch<IFetchRoom>): Promise<IFetchRoom> => {
+    try {
+      const snapshot = await roomsRef.once('value');
+      const rooms: any[] = snapshot.val();
+      const uid = auth.currentUser && auth.currentUser.uid;
+
+      const availableRooms = Object.keys(rooms).filter(
+        r => !rooms[r].black && rooms[r].red !== uid,
+      );
+
+      return dispatch({
+        rooms: availableRooms,
+        type: constants.FETCH_LOBBY,
+      });
+    } catch (error) {
+      console.error(error);
+
+      return dispatch({
+        rooms: [],
+        type: constants.FETCH_LOBBY,
+      });
     }
   };
 }

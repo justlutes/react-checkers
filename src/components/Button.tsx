@@ -30,7 +30,6 @@ const SubmitButton = styled.button`
   text-decoration: none;
   transition: all 150ms ease;
   margin-left: 12px;
-  margin-top: 28px;
   &:hover {
     transform: translateY(-1px);
     box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
