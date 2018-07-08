@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Cell } from './Cell';
 import styled from '../../../theme';
-import { ColorValues } from '../../../enum';
 
 const Container = styled.div`
   display: flex;
@@ -10,14 +9,13 @@ const Container = styled.div`
 `;
 
 interface IProps {
+  active: boolean;
   alternate: boolean;
   auxiliary: number[];
   cells: any[];
   handleMove: (f: string, t: string) => void;
   onStartMove: (d: string) => void;
-  king: boolean;
   onClick: () => void;
-  role: ColorValues;
   rowIndex: number;
   selected: boolean;
 }
@@ -32,6 +30,7 @@ export function Row(props: IProps) {
             cellIndex={cellIndex}
             {...props}
             highlight={props.auxiliary.indexOf(cellIndex) !== -1}
+            king={props.cells[cellIndex] !== -1 ? props.cells[cellIndex].king : false}
             value={props.cells[cellIndex] !== -1 ? props.cells[cellIndex].color : null}
             alternate={!props.alternate ? Math.abs(i % 2) === 1 : i % 2 === 0}
           />

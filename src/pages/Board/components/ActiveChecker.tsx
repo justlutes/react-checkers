@@ -1,10 +1,12 @@
 import * as React from 'react';
 import styled from '../../../theme';
 import Draggable from '../../../components/Draggable';
+import { ColorValues } from '../../../enum';
+import { King } from './King';
 
 interface IBaseProps {
   className?: string;
-  value: 'black' | 'red';
+  value: ColorValues;
 }
 
 const CheckerBase: React.SFC<IBaseProps> = ({ className, value }) => <div className={className} />;
@@ -21,14 +23,15 @@ const StyledChecker = styled(CheckerBase)`
 interface IProps {
   onStartMove: (d: string) => void;
   index: number;
-  value: 'black' | 'red';
+  king: boolean;
+  value: ColorValues;
 }
 
-export function ActiveChecker({ onStartMove, index, value }: IProps) {
+export function ActiveChecker({ onStartMove, index, king, value }: IProps) {
   const data = JSON.stringify({ cellIndex: index, value });
   return (
     <Draggable handleDrag={onStartMove} data={data}>
-      <StyledChecker value={value} />
+      {king ? <King value={value} /> : <StyledChecker value={value} />}
     </Draggable>
   );
 }

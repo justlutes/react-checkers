@@ -2,8 +2,9 @@ import { Action, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { StoreState, IGameState, ICheckerValue } from '../../@types';
 import * as constants from '../constants';
-import { rowsApart } from '../../lib/rowUtils';
 import { ColorValues } from '../../enum';
+import { roomsRef } from '../../lib/firebase';
+import { buildAuxiliary } from '../../lib/buildAuxiliary';
 // import { auth, roomsRef } from '../../lib/firebase';
 // import { push } from 'react-router-redux';
 
@@ -94,44 +95,69 @@ export function StartMoveAction(
     const { cellIndex, value }: ICheckerValue = JSON.parse(fromData);
     const { cells, ongoing } = currentState;
     const color: ColorValues = value;
-    const blockedRows = [
-      cellIndex - 9,
-      cellIndex - 18,
-      cellIndex - 7,
-      cellIndex - 14,
-      cellIndex + 7,
-      cellIndex + 14,
-      cellIndex + 9,
-      cellIndex + 18,
-    ];
 
-    const newAuxiliary = blockedRows.map((ele, index) => {
-      // turn is over
-      if (!ongoing) {
-        return -1;
-      } else if (
-        false ||
-        // our rules chart for determining whether a cell is a valid destination
-        // or not
-        ele < 0 ||
-        ele > 63 || // space needs to be on the board
-        cells[ele] !== -1 || // space needs to be empty
-        (index % 2 !== 0 &&
-          (cells[blockedRows[index - 1]] === -1 || // outer cells need a piece to jump over
-            cells[blockedRows[index - 1]].color === color)) || // and we can't eat friendlies
-        (index % 2 === 1 && rowsApart(cellIndex, ele) !== 2) || // must maintain diagonal move structure
-        (index % 2 === 0 && rowsApart(cellIndex, ele) !== 1) ||
-        (color === ColorValues.red && ele > cellIndex && !cells[cellIndex].king) || // non-kings cannot move backwards
-        (color === ColorValues.black && ele < cellIndex && !cells[cellIndex].king)
-      ) {
-        return -1;
-      }
-      return ele; // default
+    const auxiliary = buildAuxiliary(cellIndex, ongoing, cells, color);
+
+    return dispatch({
+      state: { ...currentState, auxiliary },
+      type: constants.START_MOVE,
+    });
+  };
+}
+
+export function TurnOverAction(
+  roomId: string,
+  currentState: IGameState,
+): ThunkAction<Promise<Action>, StoreState, void, ITurnOver> {
+  return async (dispatch: Dispatch<ITurnOver>): Promise<Action> => {
+    const { cells, turn } = currentState;
+    const updatedTurn = turn === ColorValues.red ? ColorValues.black : ColorValues.red;
+    const newState = {
+      active: null,
+      auxiliary: [],
+      cells,
+      history: [],
+      ongoing: true,
+      selected: null,
+      turn: updatedTurn,
+    };
+    let gameOver = false;
+
+    try {
+      await roomsRef
+        .child(roomId)
+        .child('state')
+        .set(newState);
+    } catch (error) {
+      console.error(error);
+    }
+
+    // Check win state
+    const opponents = Array.from({ length: 63 })
+      .map((_, i) => {
+        if (cells[i] !== -1 && cells[i].color !== turn) {
+          return i;
+        }
+        return;
+      })
+      .filter(o => o) as number[];
+
+    if (!opponents.length) {
+      gameOver = false;
+    }
+
+    gameOver = opponents.every(o => {
+      const testAuxiliary = buildAuxiliary(o, true, cells, updatedTurn);
+      return testAuxiliary.every(aux => aux !== -1);
     });
 
     return dispatch({
-      state: { ...currentState, auxiliary: newAuxiliary },
-      type: constants.START_MOVE,
+      state: {
+        ...currentState,
+        gameOver,
+        turn: updatedTurn,
+      },
+      type: constants.TURN_OVER,
     });
   };
 }

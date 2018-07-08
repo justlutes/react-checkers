@@ -26,35 +26,35 @@ const CellColor = styled(CellBase)`
 `;
 
 interface IProps {
+  active: boolean;
   alternate: boolean;
   cellIndex: number;
   handleMove: (f: string, t: string) => void;
   onStartMove: (d: string) => void;
   highlight: boolean;
   king: boolean;
-  role: ColorValues;
   selected: boolean;
-  value: 'black' | 'red' | null;
+  value: ColorValues | null;
 }
 
 export function Cell({
+  active,
   alternate,
   cellIndex,
   handleMove,
   highlight,
   king,
   onStartMove,
-  role,
-  selected,
   value,
 }: IProps) {
-  // const classNames = ['cell', highlight ? 'highlight' : '', selected ? 'selected' : ''];
   const data = JSON.stringify({ cellIndex });
-  if (role === value) {
+  if (active) {
     return (
       <Droppable onDrop={handleMove} data={data}>
         <CellColor alternate={alternate} highlight={highlight}>
-          {value && <ActiveChecker onStartMove={onStartMove} index={cellIndex} value={value} />}
+          {value && (
+            <ActiveChecker king={king} onStartMove={onStartMove} index={cellIndex} value={value} />
+          )}
         </CellColor>
       </Droppable>
     );
@@ -62,7 +62,7 @@ export function Cell({
   return (
     <Droppable onDrop={handleMove} data={data}>
       <CellColor alternate={alternate} highlight={highlight}>
-        {value && <Checker value={value} />}
+        {value && <Checker king={king} value={value} />}
       </CellColor>
     </Droppable>
   );

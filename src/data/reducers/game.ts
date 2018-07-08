@@ -1,4 +1,4 @@
-import { START_MOVE, GAME_INITIALIZED, MOVE_CHECKER } from '../constants';
+import { START_MOVE, GAME_INITIALIZED, MOVE_CHECKER, TURN_OVER } from '../constants';
 import { GameAction } from '../actions';
 import { ColorValues } from '../../enum';
 // import { GameStoreState } from '../../@types';
@@ -25,6 +25,8 @@ export function gameReducer(state = initialState, action: GameAction): any {
         ...action.state,
       };
     case MOVE_CHECKER:
+      return { ...state, ...action.state };
+    case TURN_OVER:
       return { ...state, ...action.state };
     default:
       return state;

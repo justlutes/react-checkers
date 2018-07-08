@@ -1,9 +1,11 @@
 import * as React from 'react';
 import styled from '../../../theme';
+import { ColorValues } from '../../../enum';
+import { King } from './King';
 
 interface IBaseProps {
   className?: string;
-  value: 'black' | 'red';
+  value: ColorValues;
 }
 
 const CheckerBase: React.SFC<IBaseProps> = ({ className, value }) => <div className={className} />;
@@ -18,13 +20,10 @@ const StyledChecker = styled(CheckerBase)`
 `;
 
 interface IProps {
-  value: 'black' | 'red';
+  king: boolean;
+  value: ColorValues;
 }
 
-export function Checker({ value }: IProps) {
-  return (
-    <div>
-      <StyledChecker value={value} />
-    </div>
-  );
+export function Checker({ king, value }: IProps) {
+  return <div>{king ? <King value={value} /> : <StyledChecker value={value} />}</div>;
 }
