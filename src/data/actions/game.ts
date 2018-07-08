@@ -137,8 +137,7 @@ export function TurnOverAction(
 
     if (!opponents.length) {
       checkWinner = turn;
-    }
-    if (opponents.length) {
+    } else if (opponents.length) {
       const haveOptions = opponents.some(o => {
         const testAuxiliary = buildAuxiliary(o, true, cells, updatedTurn);
         return testAuxiliary.some(aux => aux !== -1);
