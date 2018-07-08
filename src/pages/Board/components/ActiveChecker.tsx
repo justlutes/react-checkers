@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from '../../../theme';
+import Draggable from '../../../components/Draggable';
 
 interface IBaseProps {
   className?: string;
@@ -13,18 +14,21 @@ const StyledChecker = styled(CheckerBase)`
   height: 54px;
   border-radius: 50%;
   border: 4px solid white;
-  opacity: 0.55;
+  cursor: pointer;
   background: ${props => (props.value === 'red' ? '#CC0000' : '#000')};
 `;
 
 interface IProps {
+  onStartMove: (d: string) => void;
+  index: number;
   value: 'black' | 'red';
 }
 
-export function Checker({ value }: IProps) {
+export function ActiveChecker({ onStartMove, index, value }: IProps) {
+  const data = JSON.stringify({ cellIndex: index, value });
   return (
-    <div>
+    <Draggable handleDrag={onStartMove} data={data}>
       <StyledChecker value={value} />
-    </div>
+    </Draggable>
   );
 }

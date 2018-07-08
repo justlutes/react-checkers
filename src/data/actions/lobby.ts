@@ -8,6 +8,7 @@ import { auth, roomsRef } from '../../lib/firebase';
 import { push } from 'react-router-redux';
 
 export interface ICreateRoom {
+  full: boolean;
   roomId: number;
   type: constants.CREATE_LOBBY;
   state: IGameState;
@@ -28,6 +29,7 @@ export function CreateRoomAction(): ThunkAction<Promise<Action>, StoreState, voi
     try {
       const roomId = uuid();
       const roomData = {
+        full: false,
         red: auth.currentUser && auth.currentUser.uid,
         roomId,
         state: generateBoard(),
@@ -37,6 +39,10 @@ export function CreateRoomAction(): ThunkAction<Promise<Action>, StoreState, voi
       dispatch({
         ...roomData,
         type: constants.CREATE_LOBBY,
+      });
+      dispatch({
+        ...roomData,
+        type: constants.GAME_INITIALIZED,
       });
       return dispatch(push(`/board/${roomId}`));
     } catch (e) {
@@ -74,6 +80,10 @@ export function JoinRoomAction(
           state: existingRoom.state,
           type: constants.JOIN_LOBBY,
         });
+        dispatch({
+          state: { ...existingRoom.state },
+          type: constants.GAME_INITIALIZED,
+        });
         return dispatch(push(`/board/${roomId}`));
       }
 
@@ -86,6 +96,10 @@ export function JoinRoomAction(
           state: { ...existingRoom.state, black: uid },
           type: constants.JOIN_LOBBY,
         });
+        dispatch({
+          state: existingRoom.state,
+          type: constants.GAME_INITIALIZED,
+        });
         return dispatch(push(`/board/${roomId}`));
       }
       if (existingRoom.black === uid) {
@@ -95,6 +109,10 @@ export function JoinRoomAction(
           roomId,
           state: existingRoom.state,
           type: constants.JOIN_LOBBY,
+        });
+        dispatch({
+          state: existingRoom.state,
+          type: constants.GAME_INITIALIZED,
         });
         return dispatch(push(`/board/${roomId}`));
       }

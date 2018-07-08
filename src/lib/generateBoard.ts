@@ -1,4 +1,5 @@
 import { IGameState } from '../@types';
+import { ColorValues } from '../enum';
 
 export default function generateBoard(): IGameState {
   const cells = Array(64).fill(-1);
@@ -20,7 +21,7 @@ export default function generateBoard(): IGameState {
   }
 
   return {
-    active: false,
+    active: null,
     auxiliary: [],
     cells,
     dead: [],
@@ -28,6 +29,6 @@ export default function generateBoard(): IGameState {
     history: [],
     ongoing: true,
     selected: null,
-    turn: 'red',
+    turn: ColorValues.red,
   };
 }

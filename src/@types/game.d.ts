@@ -1,11 +1,18 @@
+import { ColorValues } from '../enum';
+
 export interface IGameState {
-  active: boolean;
+  active: number | null;
   auxiliary: any[];
   cells: any[];
   dead: any[];
   gameOver: boolean;
-  history: any[];
+  history: IGameState[];
   ongoing: boolean;
   selected: number | null;
-  turn: 'black' | 'red';
+  turn: ColorValues;
+}
+
+export interface ICheckerValue {
+  cellIndex: number;
+  value: ColorValues;
 }

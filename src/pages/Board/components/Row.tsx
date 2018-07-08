@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Cell } from './Cell';
 import styled from '../../../theme';
+import { ColorValues } from '../../../enum';
 
 const Container = styled.div`
   display: flex;
@@ -10,28 +11,32 @@ const Container = styled.div`
 
 interface IProps {
   alternate: boolean;
+  auxiliary: number[];
   cells: any[];
-  highlight: boolean;
+  handleMove: (f: string, t: string) => void;
+  onStartMove: (d: string) => void;
   king: boolean;
   onClick: () => void;
+  role: ColorValues;
   rowIndex: number;
   selected: boolean;
 }
 export function Row(props: IProps) {
   return (
     <Container>
-      {Array.from({ length: 8 }).map((_, i) => (
-        <Cell
-          key={`cell:${i}`}
-          {...props}
-          value={
-            props.cells[props.rowIndex * 8 + i] !== -1
-              ? props.cells[props.rowIndex * 8 + i].color
-              : null
-          }
-          alternate={!props.alternate ? Math.abs(i % 2) === 1 : i % 2 === 0}
-        />
-      ))}
+      {Array.from({ length: 8 }).map((_, i) => {
+        const cellIndex = props.rowIndex * 8 + i;
+        return (
+          <Cell
+            key={`cell:${cellIndex}`}
+            cellIndex={cellIndex}
+            {...props}
+            highlight={props.auxiliary.indexOf(cellIndex) !== -1}
+            value={props.cells[cellIndex] !== -1 ? props.cells[cellIndex].color : null}
+            alternate={!props.alternate ? Math.abs(i % 2) === 1 : i % 2 === 0}
+          />
+        );
+      })}
     </Container>
   );
 }
