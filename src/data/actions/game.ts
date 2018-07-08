@@ -154,7 +154,6 @@ export function TurnOverAction(
           const userRef = usersRef.child(auth.currentUser.uid);
           const snapshot = await userRef.once('value');
           const user: IFirebaseUser = snapshot.val();
-          console.error(user);
           const newWins = user.wins + 1;
 
           await userRef.child('wins').set(newWins);

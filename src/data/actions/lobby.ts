@@ -89,6 +89,7 @@ export function JoinRoomAction(
 
       if (existingRoom.black === undefined) {
         await roomRef.child('black').set(uid);
+        await roomRef.child('full').set(true);
         dispatch({
           full: true,
           role: 'black',
