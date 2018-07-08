@@ -26,10 +26,12 @@ export function FetchLeadersAction(): ThunkAction<
       const snapshot = await usersRef.once('value');
       const users = snapshot.val();
 
-      const payload: IFirebaseUser[] = Object.keys(users).map(u => ({
-        name: users[u].email,
-        wins: users[u].wins,
-      }));
+      const payload: IFirebaseUser[] = Object.keys(users)
+        .map(u => ({
+          name: users[u].email,
+          wins: users[u].wins,
+        }))
+        .filter(u => u.wins > 0);
 
       return dispatch({
         payload,
