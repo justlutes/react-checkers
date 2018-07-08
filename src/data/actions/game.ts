@@ -123,24 +123,6 @@ export function TurnOverAction(
   return async (dispatch: Dispatch<ITurnOver>): Promise<Action> => {
     const { cells, turn } = currentState;
     const updatedTurn = turn === ColorValues.red ? ColorValues.black : ColorValues.red;
-    const newState = {
-      active: null,
-      auxiliary: [],
-      cells,
-      history: [],
-      ongoing: true,
-      selected: null,
-      turn: updatedTurn,
-    };
-
-    try {
-      await roomsRef
-        .child(roomId)
-        .child('state')
-        .set(newState);
-    } catch (error) {
-      console.error(error);
-    }
     let checkWinner = null;
 
     // Check win state
@@ -157,10 +139,11 @@ export function TurnOverAction(
       checkWinner = turn;
     }
     if (opponents.length) {
-      const haveOptions = opponents.every(o => {
+      const haveOptions = opponents.some(o => {
         const testAuxiliary = buildAuxiliary(o, true, cells, updatedTurn);
         return testAuxiliary.some(aux => aux !== -1);
       });
+
       if (!haveOptions) {
         checkWinner = turn;
       }
@@ -180,6 +163,26 @@ export function TurnOverAction(
           console.error(error);
         }
       }
+    }
+
+    const newState = {
+      active: null,
+      auxiliary: [],
+      cells,
+      history: [],
+      ongoing: true,
+      selected: null,
+      turn: updatedTurn,
+      winner: checkWinner,
+    };
+
+    try {
+      await roomsRef
+        .child(roomId)
+        .child('state')
+        .set(newState);
+    } catch (error) {
+      console.error(error);
     }
 
     return dispatch({

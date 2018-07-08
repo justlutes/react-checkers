@@ -7,11 +7,11 @@ const initialState = {
   auxiliary: [],
   cells: [],
   dead: [],
-  gameOver: false,
   history: [],
   ongoing: false,
   selected: null,
   turn: ColorValues.red,
+  winner: null,
 };
 
 export function gameReducer(state = initialState, action: GameAction): any {

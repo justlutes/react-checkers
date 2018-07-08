@@ -26,6 +26,11 @@ const Container = styled.main`
   width: 100%;
 `;
 
+const WaitingText = styled.h3`
+  text-transform: uppercase;
+  color: ${theme.primaryColor};
+`;
+
 export function mapStateToProps({ game, lobby }: GameStoreState) {
   return {
     game,
@@ -97,6 +102,8 @@ class Board extends React.Component<IProps, {}> {
   public onUndo = () => this.props.undoTurn(this.props.game);
 
   public render() {
+    console.error(this.props.game);
+    console.error('winner', this.props.game.winner);
     if (this.props.game.winner && this.props.game.winner !== null) {
       return (
         <Container>
@@ -106,10 +113,16 @@ class Board extends React.Component<IProps, {}> {
     }
     return (
       <Container>
-        <ButtonContainer>
-          {/* {this.props.game.history.length ? <Button text="Undo" onClick={this.onUndo} /> : null} */}
-          <Button text="End turn" onClick={this.onEndTurn} />
-        </ButtonContainer>
+        {this.props.game.turn === this.props.lobby.role ? (
+          <ButtonContainer>
+            {/* {this.props.game.history.length ? <Button text="Undo" onClick={this.onUndo} /> : null} */}
+            <Button text="End turn" onClick={this.onEndTurn} />
+          </ButtonContainer>
+        ) : (
+          <ButtonContainer>
+            <WaitingText>Waiting on {this.props.game.turn}</WaitingText>
+          </ButtonContainer>
+        )}
         <GameBoard
           gameState={this.props.game}
           handleMove={this.onHandleMove}
