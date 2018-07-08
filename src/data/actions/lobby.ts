@@ -42,7 +42,7 @@ export function CreateRoomAction(): ThunkAction<Promise<Action>, StoreState, voi
       });
       dispatch({
         ...roomData,
-        type: constants.GAME_INITIALIZED,
+        type: constants.GAME_UPDATE,
       });
       return dispatch(push(`/board/${roomId}`));
     } catch (e) {
@@ -81,8 +81,8 @@ export function JoinRoomAction(
           type: constants.JOIN_LOBBY,
         });
         dispatch({
-          state: { ...existingRoom.state },
-          type: constants.GAME_INITIALIZED,
+          state: existingRoom.state,
+          type: constants.GAME_UPDATE,
         });
         return dispatch(push(`/board/${roomId}`));
       }
@@ -90,7 +90,7 @@ export function JoinRoomAction(
       if (existingRoom.black === undefined) {
         await roomRef.child('black').set(uid);
         dispatch({
-          full: false,
+          full: true,
           role: 'black',
           roomId,
           state: { ...existingRoom.state, black: uid },
@@ -98,13 +98,13 @@ export function JoinRoomAction(
         });
         dispatch({
           state: existingRoom.state,
-          type: constants.GAME_INITIALIZED,
+          type: constants.GAME_UPDATE,
         });
         return dispatch(push(`/board/${roomId}`));
       }
       if (existingRoom.black === uid) {
         dispatch({
-          full: false,
+          full: true,
           role: 'black',
           roomId,
           state: existingRoom.state,
@@ -112,13 +112,13 @@ export function JoinRoomAction(
         });
         dispatch({
           state: existingRoom.state,
-          type: constants.GAME_INITIALIZED,
+          type: constants.GAME_UPDATE,
         });
         return dispatch(push(`/board/${roomId}`));
       }
 
       return dispatch({
-        full: true,
+        full: false,
         roomId: null,
         type: constants.JOIN_LOBBY,
       });

@@ -27,7 +27,7 @@ export function FetchLeadersAction(): ThunkAction<
       const users = snapshot.val();
 
       const payload: IFirebaseUser[] = Object.keys(users).map(u => ({
-        name: users[u].name,
+        name: users[u].email,
         wins: users[u].wins,
       }));
 

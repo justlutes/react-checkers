@@ -3,13 +3,20 @@ import styled from '../../../theme';
 import { ColorValues } from '../../../enum';
 
 interface IBaseProps {
+  children?: React.ReactChild;
   className?: string;
   value: ColorValues;
 }
 
-const CheckerBase: React.SFC<IBaseProps> = ({ className }) => <div className={className} />;
+const CheckerBase: React.SFC<IBaseProps> = ({ children, className }) => (
+  <div className={className}>{children}</div>
+);
 
 const StyledChecker = styled(CheckerBase)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 54px;
   height: 54px;
   border-radius: 50%;
@@ -21,7 +28,7 @@ const StyledChecker = styled(CheckerBase)`
 export function King({ value }: any) {
   return (
     <StyledChecker value={value}>
-      <svg version="1.1" x="0px" y="0px" viewBox="0 0 512 512">
+      <svg version="1.1" x="0px" y="0px" viewBox="0 0 512 512" style={{ width: 30, height: 30 }}>
         <path
           fill="#777"
           d="M416,436H96c-8.805,0-16.574-5.758-19.135-14.183l-76-250

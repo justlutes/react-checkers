@@ -1,3 +1,6 @@
+import { IGameState } from './game';
+import { ColorValues } from '../enum';
+
 export interface StoreState {
   leaderBoard: any[];
   user: any;
@@ -9,6 +12,6 @@ export interface HomeStoreState {
 }
 
 export interface GameStoreState {
-  game: any;
+  game: IGameState;
   lobby: any;
 }

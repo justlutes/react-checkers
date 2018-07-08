@@ -5,11 +5,11 @@ export interface IGameState {
   auxiliary: any[];
   cells: any[];
   dead: any[];
-  gameOver: boolean;
   history: IGameState[];
   ongoing: boolean;
   selected: number | null;
   turn: ColorValues;
+  winner: ColorValues | null;
 }
 
 export interface ICheckerValue {

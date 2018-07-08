@@ -21,21 +21,21 @@ interface IProps {
 export class GameBoard extends React.Component<IProps, {}> {
   public renderRow = () => {
     const { handleMove, gameState, onStartMove } = this.props;
-    const { auxiliary = [], cells, selected, turn } = gameState;
+    const { auxiliary = [], cells, turn } = gameState;
     return (
       <React.Fragment>
         {Array.from({ length: 8 }).map((_, i) => (
           <Row
-            active={this.props.role === turn}
             alternate={Math.abs(i % 2) === 1}
             auxiliary={auxiliary}
             key={`row:${i}`}
             handleMove={handleMove}
             onStartMove={onStartMove}
+            role={this.props.role}
             rowIndex={i}
-            selected={selected === i}
             onClick={() => console.error('row')}
             cells={cells}
+            turn={turn}
           />
         ))}
       </React.Fragment>

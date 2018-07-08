@@ -25,10 +25,10 @@ export default function generateBoard(): IGameState {
     auxiliary: [],
     cells,
     dead: [],
-    gameOver: false,
     history: [],
     ongoing: true,
     selected: null,
     turn: ColorValues.red,
+    winner: null,
   };
 }

@@ -26,29 +26,30 @@ const CellColor = styled(CellBase)`
 `;
 
 interface IProps {
-  active: boolean;
   alternate: boolean;
   cellIndex: number;
   handleMove: (f: string, t: string) => void;
   onStartMove: (d: string) => void;
   highlight: boolean;
   king: boolean;
-  selected: boolean;
+  role: ColorValues;
+  turn: ColorValues;
   value: ColorValues | null;
 }
 
 export function Cell({
-  active,
   alternate,
   cellIndex,
   handleMove,
   highlight,
   king,
   onStartMove,
+  role,
+  turn,
   value,
 }: IProps) {
   const data = JSON.stringify({ cellIndex });
-  if (active) {
+  if (role === turn && turn === value) {
     return (
       <Droppable onDrop={handleMove} data={data}>
         <CellColor alternate={alternate} highlight={highlight}>

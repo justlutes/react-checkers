@@ -1,12 +1,10 @@
 import { Action, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { StoreState, IGameState, ICheckerValue } from '../../@types';
+import { StoreState, IGameState, ICheckerValue, IFirebaseUser } from '../../@types';
 import * as constants from '../constants';
 import { ColorValues } from '../../enum';
-import { roomsRef } from '../../lib/firebase';
+import { roomsRef, usersRef, auth } from '../../lib/firebase';
 import { buildAuxiliary } from '../../lib/buildAuxiliary';
-// import { auth, roomsRef } from '../../lib/firebase';
-// import { push } from 'react-router-redux';
 
 export interface IMoveChecker {
   state: IGameState;
@@ -20,7 +18,7 @@ export interface IStartMove {
 
 export interface IGameInitial {
   state: IGameState;
-  type: constants.GAME_INITIALIZED;
+  type: constants.GAME_UPDATE;
 }
 
 export interface ITurnOver {
@@ -28,12 +26,24 @@ export interface ITurnOver {
   type: constants.TURN_OVER;
 }
 
+export interface ITurnUndo {
+  state: IGameState;
+  type: constants.UNDO_TURN;
+}
+
 export interface IGameOver {
   state: IGameState;
   type: constants.GAME_OVER;
 }
 
-export type GameAction = IMoveChecker | ITurnOver | IGameOver | IGameInitial | IStartMove;
+export type GameAction =
+  | IMoveChecker
+  | ITurnOver
+  | ITurnUndo
+  | IGameOver
+  | IGameInitial
+  | IStartMove
+  | IGameOver;
 
 export function MoveAction(
   fromData: any,
@@ -80,6 +90,8 @@ export function MoveAction(
         active: newIndex,
         auxiliary: [],
         cells: updatedCells,
+        dead: updatedDead,
+        history: updatedHistory,
         ongoing: !singleMove,
       },
       type: constants.MOVE_CHECKER,
@@ -95,7 +107,6 @@ export function StartMoveAction(
     const { cellIndex, value }: ICheckerValue = JSON.parse(fromData);
     const { cells, ongoing } = currentState;
     const color: ColorValues = value;
-
     const auxiliary = buildAuxiliary(cellIndex, ongoing, cells, color);
 
     return dispatch({
@@ -121,7 +132,6 @@ export function TurnOverAction(
       selected: null,
       turn: updatedTurn,
     };
-    let gameOver = false;
 
     try {
       await roomsRef
@@ -131,6 +141,7 @@ export function TurnOverAction(
     } catch (error) {
       console.error(error);
     }
+    let checkWinner = null;
 
     // Check win state
     const opponents = Array.from({ length: 63 })
@@ -143,21 +154,73 @@ export function TurnOverAction(
       .filter(o => o) as number[];
 
     if (!opponents.length) {
-      gameOver = false;
+      checkWinner = turn;
+    }
+    if (opponents.length) {
+      const haveOptions = opponents.every(o => {
+        const testAuxiliary = buildAuxiliary(o, true, cells, updatedTurn);
+        return testAuxiliary.some(aux => aux !== -1);
+      });
+      if (!haveOptions) {
+        checkWinner = turn;
+      }
     }
 
-    gameOver = opponents.every(o => {
-      const testAuxiliary = buildAuxiliary(o, true, cells, updatedTurn);
-      return testAuxiliary.every(aux => aux !== -1);
-    });
+    if (checkWinner !== null) {
+      if (auth.currentUser && auth.currentUser.uid !== null) {
+        try {
+          const userRef = usersRef.child(auth.currentUser.uid);
+          const snapshot = await userRef.once('value');
+          const user: IFirebaseUser = snapshot.val();
+          console.error(user);
+          const newWins = user.wins + 1;
+
+          await userRef.child('wins').set(newWins);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
 
     return dispatch({
       state: {
         ...currentState,
-        gameOver,
         turn: updatedTurn,
+        winner: checkWinner,
       },
       type: constants.TURN_OVER,
+    });
+  };
+}
+
+export function TurnUndoAction(
+  currentState: IGameState,
+): ThunkAction<Promise<Action>, StoreState, void, ITurnUndo> {
+  return async (dispatch: Dispatch<ITurnUndo>): Promise<Action> => {
+    const history = currentState.history.slice();
+    const mostRecentMove = history.pop();
+
+    if (mostRecentMove) {
+      mostRecentMove.auxiliary = [];
+      return dispatch({
+        state: { ...currentState, ...mostRecentMove },
+        type: constants.UNDO_TURN,
+      });
+    }
+    return dispatch({
+      state: currentState,
+      type: constants.UNDO_TURN,
+    });
+  };
+}
+
+export function GameUpdateAction(
+  updatedState: IGameState,
+): ThunkAction<Promise<Action>, StoreState, void, IGameInitial> {
+  return async (dispatch: Dispatch<IGameInitial>): Promise<Action> => {
+    return dispatch({
+      state: updatedState,
+      type: constants.GAME_UPDATE,
     });
   };
 }
