@@ -15,7 +15,10 @@ export interface ICreateRoom {
 }
 
 export interface IFetchRoom {
-  rooms: any[];
+  rooms: {
+    joinedRooms: string[];
+    waitingRooms: string[];
+  };
   type: constants.FETCH_LOBBY;
 }
 
@@ -66,19 +69,27 @@ export function FetchRoomAction(): ThunkAction<Promise<Action>, StoreState, void
       const rooms: any[] = snapshot.val();
       const uid = auth.currentUser && auth.currentUser.uid;
 
-      const availableRooms = Object.keys(rooms).filter(
-        r => !rooms[r].black || rooms[r].black === uid || rooms[r].red === uid,
+      const availableRooms = Object.keys(rooms).filter(r => !rooms[r].state.winner);
+      const joinedRooms = availableRooms.filter(
+        r => rooms[r].black === uid || rooms[r].red === uid,
       );
+      const waitingRooms = availableRooms.filter(r => !rooms[r].black && rooms[r].red !== uid);
 
       return dispatch({
-        rooms: availableRooms,
+        rooms: {
+          joinedRooms,
+          waitingRooms,
+        },
         type: constants.FETCH_LOBBY,
       });
     } catch (error) {
       console.error(error);
 
       return dispatch({
-        rooms: [],
+        rooms: {
+          joinedRooms: [],
+          waitingRooms: [],
+        },
         type: constants.FETCH_LOBBY,
       });
     }

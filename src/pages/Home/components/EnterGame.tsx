@@ -6,8 +6,8 @@ import styled from '../../../theme';
 const Form = styled.form`
   position: relative;
   width: 100%;
-  max-width: 500px;
-  margin-top: 40px;
+  max-width: 95%;
+  margin-top: 60px;
   transition-property: opacity, transform;
   transition-duration: 0.35s;
   transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -17,11 +17,7 @@ const Row = styled.div`
   display: flex;
   margin: 0 5px 10px;
   width: 100%;
-  align-items: flex-end;
-`;
-
-const ButtonRow = Row.extend`
-  justify-content: center;
+  align-items: center;
 `;
 
 interface IProps {
@@ -60,11 +56,9 @@ export class EnterGame extends React.PureComponent<IProps, IState> {
           <Row>
             <Input type="tel" placeholder="12345" onChange={this.handleRoomChange} />
             <Button text="Join Room" />
+            <Button text="Create A New Room" onClick={this.props.createRoom} />
           </Row>
         </Form>
-        <ButtonRow>
-          <Button text="Create A New Room" onClick={this.props.createRoom} />
-        </ButtonRow>
       </React.Fragment>
     );
   }

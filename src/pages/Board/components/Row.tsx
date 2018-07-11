@@ -15,7 +15,6 @@ interface IProps {
   cells: any[];
   handleMove: (f: string, t: string) => void;
   onStartMove: (d: string) => void;
-  onClick: () => void;
   role: ColorValues;
   rowIndex: number;
   turn: ColorValues;

@@ -102,8 +102,6 @@ class Board extends React.Component<IProps, {}> {
   public onUndo = () => this.props.undoTurn(this.props.game);
 
   public render() {
-    console.error(this.props.game);
-    console.error('winner', this.props.game.winner);
     if (this.props.game.winner && this.props.game.winner !== null) {
       return (
         <Container>

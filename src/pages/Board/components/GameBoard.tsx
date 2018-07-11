@@ -33,7 +33,6 @@ export class GameBoard extends React.Component<IProps, {}> {
             onStartMove={onStartMove}
             role={this.props.role}
             rowIndex={i}
-            onClick={() => console.error('row')}
             cells={cells}
             turn={turn}
           />
