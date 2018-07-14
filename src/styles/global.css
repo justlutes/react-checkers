@@ -19,6 +19,13 @@ html {
   -ms-overflow-style: none;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -26,6 +33,7 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(90deg, #777bf8, #68d4f8 200%);
 }
 button {
   -webkit-appearance: none;

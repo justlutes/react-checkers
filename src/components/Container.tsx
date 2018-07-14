@@ -1,30 +1,20 @@
 import * as React from 'react';
-import styled, { theme } from '../theme';
+import styled from '../theme';
 
 const Wrapper = styled.main`
   display: flex;
-  align-items: center;
   flex-direction: column;
-  background: ${theme.secondaryColor};
-  height: 100vh;
+  align-items: center;
+  position: relative;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 100%;
   width: 100%;
-`;
-
-const Padding = styled.div`
-  padding: 60px 40px;
-  display: flex;
-  width: 75%;
-  align-items: center;
-  flex-direction: column;
 `;
 
 interface IProps {
   children?: React.ReactChild | React.ReactChild[];
 }
 export default function Container({ children }: IProps) {
-  return (
-    <Wrapper>
-      <Padding>{children}</Padding>
-    </Wrapper>
-  );
+  return <Wrapper>{children}</Wrapper>;
 }

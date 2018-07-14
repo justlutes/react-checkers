@@ -3,22 +3,50 @@ import Button from '../../../components/Button';
 import Input from '../../../components/Input';
 import styled from '../../../theme';
 
-const Container = styled.div`
-  margin-top: 70px
-  background: #ffffff;
+interface ILabelProps {
+  text: string;
+  active: boolean;
+  className?: string;
+  onClick: () => void;
+}
+
+function NavLabel({ className, onClick, text }: ILabelProps) {
+  return (
+    <span onClick={onClick} className={className}>
+      {text}
+    </span>
+  );
+}
+
+const Nav = styled(NavLabel)`
+  cursor: pointer;
+  color: #424770;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    height: 2px;
+    background: ${props => (props.active ? '#6772e5' : 'transparent')};
+    left: 0;
+    bottom: -4px;
+    right: ${props => (props.active ? 0 : '400px')};
+    transition: right 400ms cubic-bezier(1, 0, 0, 1), background 400ms cubic-bezier(1, 0, 0, 1) 0ms;
+  }
+`;
+
+const HeaderRow = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 40px;
-  min-width: 100%;
-  min-height: 500px;
-  align-items: center;
-  border-radius: 4px;
-  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+  justify-content: space-evenly;
+  padding: 20px;
+  margin-bottom: 15px;
 `;
 
 const Form = styled.form`
   position: relative;
+  padding: 10px 18px 20px 24px;
   width: 100%;
   max-width: 500px;
   transition-property: opacity, transform;
@@ -26,58 +54,104 @@ const Form = styled.form`
   transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
 `;
 
-const InputRow = styled.div`
+const FieldSet = styled.fieldset`
+  border: none;
+  margin: 0;
+  padding: 0;
+`;
+
+const SubmitRow = styled.div`
+  padding: 12px 0 0;
   display: flex;
-  margin: 0 5px 10px;
+  justify-content: flex-end;
 `;
 
 interface IProps {
-  loginUser: any;
+  createUser: (e: string, p: string, u: string) => void;
+  loginUser: (e: string, p: string) => void;
 }
 interface IState {
   email: string;
   password: string;
+  formIndex: boolean;
+  username: string;
 }
 
 export class Login extends React.Component<IProps, IState> {
   public state = {
     email: '',
+    formIndex: true,
     password: '',
+    username: '',
   };
 
   public handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     this.setState({ email: e.target.value });
   public handlePassChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     this.setState({ password: e.target.value });
+  public handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    this.setState({ username: e.target.value });
 
   public handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { email, password } = this.state;
+    const { email, password, username } = this.state;
     if (email !== '' || password !== '') {
-      try {
-        this.props.loginUser(email, password);
-      } catch (e) {
-        console.error(e);
+      if (this.state.formIndex) {
+        try {
+          this.props.loginUser(email, password);
+        } catch (e) {
+          console.error(e);
+        }
+      } else {
+        try {
+          this.props.createUser(email, password, username);
+        } catch (e) {
+          console.error(e);
+        }
       }
     }
   };
+
+  public handleFormChange = () => this.setState({ formIndex: !this.state.formIndex });
+
   public render() {
     return (
-      <Container>
+      <React.Fragment>
+        <HeaderRow>
+          <Nav text="Log In" active={this.state.formIndex} onClick={this.handleFormChange} />
+          <Nav text="Sign Up" active={!this.state.formIndex} onClick={this.handleFormChange} />
+        </HeaderRow>
         <Form onSubmit={this.handleSubmit}>
-          <InputRow>
-            <Input type="email" onChange={this.handleEmailChange} placeholder="Enter your Email" />
-          </InputRow>
-          <InputRow>
+          <FieldSet>
+            {!this.state.formIndex && (
+              <Input
+                label="Your username"
+                id="signinusername"
+                type="text"
+                onChange={this.handleUserChange}
+                placeholder="jdoe"
+              />
+            )}
             <Input
+              label="Your email address"
+              id="signinemail"
+              type="email"
+              onChange={this.handleEmailChange}
+              placeholder="jane@doe.com"
+            />
+            <Input
+              label="Your password"
+              id="signinpassword"
               type="password"
               onChange={this.handlePassChange}
-              placeholder="Enter your Password"
+              placeholder="123abc"
             />
-          </InputRow>
-          <Button text="Login" />
+          </FieldSet>
+          <SubmitRow>
+            <Button text={this.state.formIndex ? 'Login' : 'Sign up'} />
+          </SubmitRow>
         </Form>
-      </Container>
+      </React.Fragment>
     );
   }
 }

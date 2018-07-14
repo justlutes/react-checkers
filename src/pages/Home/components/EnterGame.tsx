@@ -1,23 +1,25 @@
 import * as React from 'react';
 import Button from '../../../components/Button';
-import Input from '../../../components/Input';
+// import Input from '../../../components/Input';
 import styled from '../../../theme';
 
-const Form = styled.form`
-  position: relative;
-  width: 100%;
-  max-width: 95%;
-  margin-top: 60px;
-  transition-property: opacity, transform;
-  transition-duration: 0.35s;
-  transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
-`;
+// const Form = styled.form`
+//   position: relative;
+//   width: 100%;
+//   max-width: 95%;
+//   margin-top: 60px;
+//   transition-property: opacity, transform;
+//   transition-duration: 0.35s;
+//   transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+// `;
 
 const Row = styled.div`
   display: flex;
-  margin: 0 5px 10px;
+  margin-top: 15px;
+  padding-bottom: 15px;
   width: 100%;
   align-items: center;
+  justify-content: center;
 `;
 
 interface IProps {
@@ -51,15 +53,22 @@ export class EnterGame extends React.PureComponent<IProps, IState> {
 
   public render() {
     return (
-      <React.Fragment>
-        <Form onSubmit={this.handleSubmit}>
+      <Row>
+        <Button text="Create A New Room" onClick={this.props.createRoom} />
+        {/* <Form onSubmit={this.handleSubmit}>
           <Row>
-            <Input type="tel" placeholder="12345" onChange={this.handleRoomChange} />
+            <Input
+              id="roomId"
+              label="Enter room number"
+              type="tel"
+              placeholder="12345"
+              onChange={this.handleRoomChange}
+            />
             <Button text="Join Room" />
             <Button text="Create A New Room" onClick={this.props.createRoom} />
           </Row>
-        </Form>
-      </React.Fragment>
+        </Form> */}
+      </Row>
     );
   }
 }

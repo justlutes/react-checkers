@@ -21,8 +21,7 @@ const Container = styled.main`
   display: flex;
   align-items: center;
   flex-direction: column;
-  background: ${theme.secondaryColor};
-  height: 100vh;
+  height: 100%;
   width: 100%;
 `;
 

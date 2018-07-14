@@ -7,7 +7,10 @@ const initialState = {
   full: false,
   history: [],
   roomId: null,
-  rooms: [],
+  rooms: {
+    joinedRooms: [],
+    waitingRooms: [],
+  },
 };
 
 export function lobbyReducer(state = initialState, action: LobbyAction): any {

@@ -7,7 +7,7 @@ const List = styled.div`
   flex-direction: row;
   align-items: flex-start;
   justify-content: space-between;
-  width: 95%;
+  width: 100%;
 `;
 
 const Room = styled.div`
@@ -30,12 +30,15 @@ const ID = styled.span`
 
 const Ongoing = styled.div`
   position: relative;
-  &::after {
+  padding: 15px 0 10px 20px;
+  text-align: center;
+  min-width: 345px;
+  &:nth-child(1)::after {
     content: '';
     position: absolute;
-    height: 110%;
-    right: -10%;
-    top: 0;
+    height: 90%;
+    right: -5%;
+    top: 23px;
     width: 2px;
     background: #e2e2e2;
   }
@@ -61,7 +64,7 @@ export function RoomList({ handleClick, rooms }: IProps) {
           </Room>
         ))}
       </Ongoing>
-      <div>
+      <Ongoing>
         <h3>Available Games</h3>
         {rooms.waitingRooms.map(id => (
           <Room key={id}>
@@ -69,7 +72,7 @@ export function RoomList({ handleClick, rooms }: IProps) {
             <Button text="Join" onClick={() => handleClick(id)} />
           </Room>
         ))}
-      </div>
+      </Ongoing>
     </List>
   );
 }
